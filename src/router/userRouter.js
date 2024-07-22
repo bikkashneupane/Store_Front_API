@@ -1,6 +1,11 @@
 import express from "express";
 import { comparePassword, hashPassword } from "../util/bcrypt.js";
-import { getUser, insertUser, updateUser } from "../db/user/userModel.js";
+import {
+  deleteUserById,
+  getUser,
+  insertUser,
+  updateUser,
+} from "../db/user/userModel.js";
 import {
   loginUserValidator,
   newUserValidator,
@@ -186,7 +191,7 @@ router.post("/renew-access", jwtAuth, async (req, res, next) => {
 // reset-password
 
 // update-profile
-router.post("/update-profile", updateUserValidator, async (req, res, next) => {
+router.patch("/update-profile", updateUserValidator, async (req, res, next) => {
   try {
     const { email, password, ...rest } = req.body;
 
@@ -212,5 +217,25 @@ router.post("/update-profile", updateUserValidator, async (req, res, next) => {
 });
 
 // delete-account
+router.delete("/delete-account/:_id?", async (req, res, next) => {
+  try {
+    const { _id } = req.params;
+    console.log(_id);
+
+    const user = await deleteUserById(_id);
+
+    user?._id
+      ? res.json({
+          status: "success",
+          message: "Account Deleted",
+        })
+      : res.json({
+          status: "error",
+          message: "Couldn't Delete Account, Try Again",
+        });
+  } catch (error) {
+    next(error);
+  }
+});
 
 export default router;
