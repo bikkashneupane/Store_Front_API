@@ -32,6 +32,19 @@ export const emailVerificationMail = ({ email, firstName, uniqueKey }) => {
             <a href=${url} style ="padding:1rem; background:green; margin-block:1rem">Verify Now </a><br/>
             <p>If the button does not work above, please copy the following url and paste in your browser ${url}</p>`,
   };
+  return emailProcessor(mailBody);
+};
+
+// account verified notification mail
+export const emailVerifiedNotification = ({ email, firstName }) => {
+  const mailBody = {
+    from: `"${process.env.SMTP_SENDER}" <${process.env.SMTP_EMAIL}>`, // sender address
+    to: email, // list of receivers
+    subject: "Account Verified, Login Now",
+    text: `Hello ${firstName}, Your account is verified now. Please login now to purchase your favourate watches and accessories.`,
+    html: `<b>Congratulations ${firstName}, Your Account is Now Verified</b>
+            <p>Please login now to purchase your favourate watches and accessories. </p>`,
+  };
 
   return emailProcessor(mailBody);
 };
