@@ -9,7 +9,7 @@ const emailProcessor = async (mailBody) => {
     secure: false, // Use `true` for port 465, `false` for all other ports
     auth: {
       user: `${process.env.SMTP_EMAIL}`,
-      pass: `${process.env.SMTP_PASS}`,
+      pass: `${process.env.SMTP_PASSWORD}`,
     },
   });
 
@@ -18,7 +18,10 @@ const emailProcessor = async (mailBody) => {
 };
 
 // email verification email
-export const emailVerificationMail = (email, firstName, url) => {
+export const emailVerificationMail = ({ email, firstName, uniqueKey }) => {
+  // link to verify account
+  const url = `http://localhost:5173/verify-account/uk=${uniqueKey}&e=${email}`;
+
   const mailBody = {
     from: `"${process.env.SMTP_SENDER}" <${process.env.SMTP_EMAIL}>`, // sender address
     to: email, // list of receivers
@@ -26,8 +29,8 @@ export const emailVerificationMail = (email, firstName, url) => {
     text: `Hello ${firstName}, Please follow the link to verify your account: ${url}`,
     html: `<b>Hello ${firstName}</b>
             <p>Click the button below to verify your account. </p>
-            <a href=${url} style ="padding:1rem; background:green">Verify Now </a><br/>
-            <p>If the button does not work above, please copy the following url and paste in your browser ${url}</p>`, // html body
+            <a href=${url} style ="padding:1rem; background:green; margin-block:1rem">Verify Now </a><br/>
+            <p>If the button does not work above, please copy the following url and paste in your browser ${url}</p>`,
   };
 
   return emailProcessor(mailBody);
