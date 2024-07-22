@@ -9,15 +9,16 @@ export const signAccessJWT = (email) => {
   });
   console.log(token);
   // update the session table
-  insertSession({ token });
+  insertSession({ token, associate: email });
   return token;
 };
 
 // verify access JWT
 export const verifyAccessJWT = (token) => {
   try {
-    return JWT.verify(token, SK_ACCESS);
+    return JWT.verify(token, process.env.SK_ACCESS);
   } catch (error) {
+    console.log(error);
     return error;
   }
 };
@@ -36,7 +37,7 @@ export const signRefreshJWT = (email) => {
 // verify refresh JWT
 export const verifyRefreshJWT = (token) => {
   try {
-    return JWT.verify(token, SK_REFRESH);
+    return JWT.verify(token, process.env.SK_REFRESH);
   } catch (error) {
     return error;
   }

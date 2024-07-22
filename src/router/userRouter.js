@@ -1,7 +1,7 @@
 import express from "express";
 import { comparePassword, hashPassword } from "../util/bcrypt.js";
 import { getUser, insertUser, updateUser } from "../db/user/userModel.js";
-import { loginUserValidator, newUserValidator } from "../util/joi.js";
+import { loginUserValidator, newUserValidator } from "../middlewares/joi.js";
 import { v4 as uuidv4 } from "uuid";
 import {
   emailVerificationMail,
@@ -13,6 +13,7 @@ import {
   insertSession,
 } from "../db/session/sessionModel.js";
 import { signTokens } from "../util/jwt.js";
+import { auth } from "../middlewares/auth.js";
 
 const router = express.Router();
 
@@ -140,6 +141,21 @@ router.post("/login", loginUserValidator, async (req, res, next) => {
     res.json({
       status: "error",
       message: "Incorrect Email or Password",
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
+// user profile
+router.post("/profile", auth, async (req, res, next) => {
+  try {
+    req.userInfo.password = undefined;
+
+    res.json({
+      status: "success",
+      message: "",
+      user: req.userInfo,
     });
   } catch (error) {
     next(error);
