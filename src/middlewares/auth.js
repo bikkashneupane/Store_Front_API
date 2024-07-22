@@ -1,6 +1,6 @@
 import { findSession } from "../db/session/sessionModel.js";
 import { getUser } from "../db/user/userModel.js";
-import { verifyAccessJWT } from "../util/jwt.js";
+import { verifyAccessJWT, verifyRefreshJWT } from "../util/jwt.js";
 
 // authenticate user using access jwt
 export const auth = async (req, res, next) => {
@@ -44,3 +44,33 @@ export const auth = async (req, res, next) => {
 };
 
 // authenticate user using refresh jwt
+export const jwtAuth = async (req, res, next) => {
+  try {
+    const { authorization } = req.headers;
+    let errorMessage = "";
+
+    // verfy access jwt
+    const decoded = verifyRefreshJWT(authorization);
+
+    if (decoded?.email) {
+      // get user
+      const user = await getUser({ email: decoded.email });
+
+      if (user?._id) {
+        user.__v = undefined;
+        user.refreshJWT = undefined;
+
+        req.userInfo = user;
+        return next();
+      }
+    }
+
+    // if error
+    res.json({
+      status: 401,
+      message: errorMessage || decoded,
+    });
+  } catch (error) {
+    next(error);
+  }
+};

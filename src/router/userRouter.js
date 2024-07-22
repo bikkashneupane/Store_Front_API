@@ -12,8 +12,8 @@ import {
   findSession,
   insertSession,
 } from "../db/session/sessionModel.js";
-import { signTokens } from "../util/jwt.js";
-import { auth } from "../middlewares/auth.js";
+import { signAccessJWT, signTokens } from "../util/jwt.js";
+import { auth, jwtAuth } from "../middlewares/auth.js";
 
 const router = express.Router();
 
@@ -156,6 +156,21 @@ router.post("/profile", auth, async (req, res, next) => {
       status: "success",
       message: "",
       user: req.userInfo,
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
+// renew access
+router.post("/renew-access", jwtAuth, async (req, res, next) => {
+  try {
+    const { email } = req.userInfo;
+
+    res.json({
+      status: "success",
+      message: "",
+      accessJWT: signAccessJWT(email),
     });
   } catch (error) {
     next(error);
