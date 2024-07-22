@@ -1,7 +1,11 @@
 import express from "express";
 import { comparePassword, hashPassword } from "../util/bcrypt.js";
 import { getUser, insertUser, updateUser } from "../db/user/userModel.js";
-import { loginUserValidator, newUserValidator } from "../middlewares/joi.js";
+import {
+  loginUserValidator,
+  newUserValidator,
+  updateUserValidator,
+} from "../middlewares/joi.js";
 import { v4 as uuidv4 } from "uuid";
 import {
   emailVerificationMail,
@@ -182,6 +186,30 @@ router.post("/renew-access", jwtAuth, async (req, res, next) => {
 // reset-password
 
 // update-profile
+router.post("/update-profile", updateUserValidator, async (req, res, next) => {
+  try {
+    const { email, password, ...rest } = req.body;
+
+    const updatedPassword = password && hashPassword(password);
+
+    const updatedUser = await updateUser(
+      { email },
+      { ...rest, password: updatedPassword }
+    );
+
+    updatedUser?._id
+      ? res.json({
+          status: "success",
+          message: "User Profile Updated",
+        })
+      : res.json({
+          status: "error",
+          message: "Couldn't update Profile, try again",
+        });
+  } catch (error) {
+    next(error);
+  }
+});
 
 // delete-account
 
