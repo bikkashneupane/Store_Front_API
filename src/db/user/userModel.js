@@ -6,7 +6,7 @@ export const insertUser = (obj) => {
 };
 
 // return user by filter
-export const getAUser = (filter) => {
+export const getUser = (filter) => {
   return userSchema.findOne(filter);
 };
 

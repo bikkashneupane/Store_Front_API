@@ -1,7 +1,7 @@
 import express from "express";
-import { hashPassword } from "../util/bcrypt.js";
-import { insertUser, updateUser } from "../db/user/userModel.js";
-import { newUserValidator } from "../util/joi.js";
+import { comparePassword, hashPassword } from "../util/bcrypt.js";
+import { getUser, insertUser, updateUser } from "../db/user/userModel.js";
+import { loginUserValidator, newUserValidator } from "../util/joi.js";
 import { v4 as uuidv4 } from "uuid";
 import {
   emailVerificationMail,
@@ -12,6 +12,7 @@ import {
   findSession,
   insertSession,
 } from "../db/session/sessionModel.js";
+import { signTokens } from "../util/jwt.js";
 
 const router = express.Router();
 
@@ -53,11 +54,13 @@ router.post("/signup", newUserValidator, async (req, res, next) => {
       message: "Could not register account, try again",
     });
   } catch (error) {
+    error.message =
+      error.message.includes("E11000 duplicate key error collection:") &&
+      "Email Already Registered, Choose Different Email.";
+
     next(error);
   }
 });
-
-// login
 
 // verify-account
 router.post("/verify-account", async (req, res, next) => {
@@ -107,6 +110,36 @@ router.post("/verify-account", async (req, res, next) => {
     res.json({
       status: "error",
       message: "Could not verify account, try again",
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
+// login
+router.post("/login", loginUserValidator, async (req, res, next) => {
+  try {
+    const { email, password } = req.body;
+
+    const user = await getUser({ email });
+
+    if (user?._id) {
+      const isPassword = comparePassword(password, user.password);
+
+      return isPassword
+        ? res.json({
+            status: "success",
+            tokens: signTokens(email),
+          })
+        : res.json({
+            status: "error",
+            message: "Incorrect Password",
+          });
+    }
+
+    res.json({
+      status: "error",
+      message: "Incorrect Email or Password",
     });
   } catch (error) {
     next(error);

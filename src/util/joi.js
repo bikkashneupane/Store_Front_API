@@ -30,3 +30,13 @@ export const newUserValidator = (req, res, next) => {
 
   return joiValidator(schema, req, res, next);
 };
+
+// login user validatior
+export const loginUserValidator = (req, res, next) => {
+  const schema = JOI.object({
+    email: EMAIL,
+    password: STR_REQ,
+  });
+
+  return joiValidator(schema, req, res, next);
+};
