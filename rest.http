@@ -1,0 +1,61 @@
+### signup
+POST http://localhost:8000/users/signup
+Content-Type: application/json
+
+{
+    "firstName" : "Bikash",
+    "lastName" : "Neu",
+    "phone" : 12345,
+    "email" : "bik@gmail.com",
+    "password" : "1234"
+}
+
+### verify email
+POST http://localhost:8000/users/verify-account
+Content-Type: application/json
+
+{
+    "uniqueKey" : "a5e3822c-6693-457c-baf6-8357360e9c25",
+    "email" : "bik@gmail.com"
+}
+
+### login
+POST http://localhost:8000/users/login
+Content-Type: application/json
+
+{
+    "email" : "bik@gmail.com",
+    "password" : "0000"
+}
+
+### get profile
+GET http://localhost:8000/users/profile
+Content-Type: application/json,
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImJpa0BnbWFpbC5jb20iLCJpYXQiOjE3MjE3MDU0NTQsImV4cCI6MTcyMTcwNjY1NH0.EPf4JTzJNbwYHM3A7hY_hY1HPMvCBr2PGs1iREQ2PiM
+
+### renew access
+GET http://localhost:8000/users/renew-access
+Content-Type: application/json,
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImJpa0BnbWFpbC5jb20iLCJpYXQiOjE3MjE3MDU1MjcsImV4cCI6MTcyMzQzMzUyN30.mu6CoWGMPXkkn0vkyNIrd6_qpz1h7lWvGWn_5cl7Xc0
+
+### update profile
+PATCH http://localhost:8000/users/update-profile
+Content-Type: application/json
+
+{
+    "firstName" : "Updated",
+    "lastName" : "Name",
+    "phone" : 9876,
+    "email" : "bik@gmail.com",
+    "password" : "0000"
+}
+
+### delete account
+DELETE http://localhost:8000/users/delete-account/669f23580fd13fba7fead7e1
+Content-Type: application/json
+
+### get all active categories
+GET http://localhost:8000/categories
+
+### get all active products
+GET http://localhost:8000/products

@@ -157,7 +157,7 @@ router.post("/login", loginUserValidator, async (req, res, next) => {
 });
 
 // user profile
-router.post("/profile", auth, async (req, res, next) => {
+router.get("/profile", auth, async (req, res, next) => {
   try {
     req.userInfo.password = undefined;
 
@@ -172,7 +172,7 @@ router.post("/profile", auth, async (req, res, next) => {
 });
 
 // renew access
-router.post("/renew-access", jwtAuth, async (req, res, next) => {
+router.get("/renew-access", jwtAuth, async (req, res, next) => {
   try {
     const { email } = req.userInfo;
 
@@ -186,38 +186,39 @@ router.post("/renew-access", jwtAuth, async (req, res, next) => {
   }
 });
 
-// otp request
-
-// reset-password
-
 // update-profile
-router.patch("/update-profile", updateUserValidator, async (req, res, next) => {
-  try {
-    const { email, password, ...rest } = req.body;
+router.patch(
+  "/update-profile",
+  auth,
+  updateUserValidator,
+  async (req, res, next) => {
+    try {
+      const { email, password, ...rest } = req.body;
 
-    const updatedPassword = password && hashPassword(password);
+      const updatedPassword = password && hashPassword(password);
 
-    const updatedUser = await updateUser(
-      { email },
-      { ...rest, password: updatedPassword }
-    );
+      const updatedUser = await updateUser(
+        { email },
+        { ...rest, password: updatedPassword }
+      );
 
-    updatedUser?._id
-      ? res.json({
-          status: "success",
-          message: "User Profile Updated",
-        })
-      : res.json({
-          status: "error",
-          message: "Couldn't update Profile, try again",
-        });
-  } catch (error) {
-    next(error);
+      updatedUser?._id
+        ? res.json({
+            status: "success",
+            message: "User Profile Updated",
+          })
+        : res.json({
+            status: "error",
+            message: "Couldn't update Profile, try again",
+          });
+    } catch (error) {
+      next(error);
+    }
   }
-});
+);
 
 // delete-account
-router.delete("/delete-account/:_id?", async (req, res, next) => {
+router.delete("/delete-account/:_id?", auth, async (req, res, next) => {
   try {
     const { _id } = req.params;
     console.log(_id);
@@ -237,5 +238,9 @@ router.delete("/delete-account/:_id?", async (req, res, next) => {
     next(error);
   }
 });
+
+// otp request
+
+// reset-password
 
 export default router;
