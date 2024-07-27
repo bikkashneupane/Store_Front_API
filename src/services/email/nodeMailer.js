@@ -14,13 +14,14 @@ const emailProcessor = async (mailBody) => {
   });
 
   // send mail
-  await transport.sendMail(mailBody);
+  const mail = await transport.sendMail(mailBody);
+  return mail;
 };
 
 // email verification email
 export const emailVerificationMail = ({ email, firstName, uniqueKey }) => {
   // link to verify account
-  const url = `http://localhost:5173/verify-account/uk=${uniqueKey}&e=${email}`;
+  const url = `http://localhost:5173/verify-account?uk=${uniqueKey}&e=${email}`;
 
   const mailBody = {
     from: `"${process.env.SMTP_SENDER}" <${process.env.SMTP_EMAIL}>`, // sender address

@@ -7,7 +7,6 @@ export const signAccessJWT = (email) => {
   const token = JWT.sign({ email }, process.env.SK_ACCESS, {
     expiresIn: "20m",
   });
-  console.log(token);
   // update the session table
   insertSession({ token, associate: email });
   return token;

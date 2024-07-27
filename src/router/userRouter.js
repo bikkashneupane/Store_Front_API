@@ -33,12 +33,11 @@ router.post("/signup", newUserValidator, async (req, res, next) => {
     req.body.password = hashPassword(req.body.password);
 
     const newUser = await insertUser(req.body);
-
     if (newUser?._id) {
       const uniqueKey = uuidv4();
 
       // send email to verify account
-      const sendEmail = emailVerificationMail({
+      const sendEmail = await emailVerificationMail({
         email: newUser.email,
         firstName: newUser.firstName,
         uniqueKey,

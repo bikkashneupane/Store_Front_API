@@ -1,8 +1,8 @@
 import productSchema from "./productSchema.js";
 
-// find Product
-export const getOneProduct = (filter) => {
-  return productSchema.findOne(filter);
+// find Product by Id
+export const getProductById = (_id) => {
+  return productSchema.findById(_id);
 };
 
 // find all Product

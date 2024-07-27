@@ -3,11 +3,11 @@ POST http://localhost:8000/users/signup
 Content-Type: application/json
 
 {
-    "firstName" : "Bikash",
-    "lastName" : "Neu",
+    "firstName" : "user",
+    "lastName" : "user",
     "phone" : 12345,
-    "email" : "bik@gmail.com",
-    "password" : "1234"
+    "email" : "user@gmail.com",
+    "password" : "11"
 }
 
 ### verify email
@@ -59,3 +59,6 @@ GET http://localhost:8000/categories
 
 ### get all active products
 GET http://localhost:8000/products
+
+### get product by Id 
+GET http://localhost:8000/products/66a3218842bc30d28022cd5c

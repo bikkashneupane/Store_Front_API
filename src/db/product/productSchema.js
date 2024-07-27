@@ -66,6 +66,11 @@ const schema = new mongoose.Schema(
         required: true,
       },
     ],
+    gender: {
+      type: String,
+      default: "unisex",
+      enum: ["men", "women", "unisex"],
+    },
   },
   {
     timestamps: true,

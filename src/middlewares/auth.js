@@ -6,7 +6,6 @@ import { verifyAccessJWT, verifyRefreshJWT } from "../util/jwt.js";
 export const auth = async (req, res, next) => {
   try {
     const { authorization } = req.headers;
-    let errorMessage = "";
 
     // verfy access jwt
     const decoded = verifyAccessJWT(authorization);
@@ -21,7 +20,10 @@ export const auth = async (req, res, next) => {
 
         if (user?._id) {
           if (!user.isEmailVerified) {
-            return (errorMessage = "Account Not Verified.");
+            return res.json({
+              status: "error",
+              message: " Account Not Verified. Check email to Verify Now.",
+            });
           }
 
           user.__v = undefined;
@@ -36,7 +38,7 @@ export const auth = async (req, res, next) => {
     // if error
     res.json({
       status: 401,
-      message: errorMessage || decoded,
+      message: decoded,
     });
   } catch (error) {
     next(error);
@@ -57,6 +59,10 @@ export const jwtAuth = async (req, res, next) => {
       const user = await getUser({ email: decoded.email });
 
       if (user?._id) {
+        if (!user.isEmailVerified) {
+          return (errorMessage = "Account Not Verified.");
+        }
+
         user.__v = undefined;
         user.refreshJWT = undefined;
 
@@ -68,7 +74,7 @@ export const jwtAuth = async (req, res, next) => {
     // if error
     res.json({
       status: 401,
-      message: errorMessage || decoded,
+      message: errorMessage ? errorMessage : decoded,
     });
   } catch (error) {
     next(error);
