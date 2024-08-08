@@ -17,7 +17,7 @@ export const routes = [
     middlewares: [productRouter],
   },
   {
-    path: "/payment",
+    path: "/payments",
     middlewares: [paymentRouter],
   },
 ];
