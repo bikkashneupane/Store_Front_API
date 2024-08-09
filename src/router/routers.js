@@ -1,7 +1,7 @@
 import userRouter from "./userRouter.js";
 import categoryRouter from "./categoryRouter.js";
 import productRouter from "./productRouter.js";
-import paymentRouter from "./paymentRouter.js";
+import orderRouter from "./orderRouter.js";
 
 export const routes = [
   {
@@ -17,7 +17,7 @@ export const routes = [
     middlewares: [productRouter],
   },
   {
-    path: "/payments",
-    middlewares: [paymentRouter],
+    path: "/orders",
+    middlewares: [orderRouter],
   },
 ];
