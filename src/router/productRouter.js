@@ -7,6 +7,7 @@ const router = express.Router();
 router.get("/", async (req, res, next) => {
   try {
     const products = await getProducts({ status: "active" });
+    console.log(products);
     products.length
       ? res.json({
           status: "success",

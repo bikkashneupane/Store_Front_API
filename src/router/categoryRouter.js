@@ -1,6 +1,7 @@
 import express from "express";
 import { getCategories } from "../db/category/categoryModel.js";
-import { getSubCategories } from "../db/sub-category/subCategoryModel.js";
+import { getBrands } from "../db/sub-category/brandModel.js";
+import { getMaterials } from "../db/sub-category/materialModel.js";
 
 const router = express.Router();
 
@@ -18,17 +19,27 @@ router.get("/", async (req, res, next) => {
   }
 });
 
-//get all subcategories
-router.get("/sub-category", async (req, res, next) => {
+// get all subcategories (brand/ materials)
+router.get("/sub-categories", async (req, res, next) => {
   try {
-    const categories = await getSubCategories();
+    const brands = await getBrands();
+    const materials = await getMaterials();
+
+    if (brands?.length > 0 && materials?.length > 0) {
+      return res.json({
+        status: "success",
+        message: "",
+        brands,
+        materials,
+      });
+    }
     res.json({
-      status: "success",
-      message: "",
-      categories,
+      status: "error",
+      message: "Couldn't resolve request, try again",
     });
   } catch (error) {
     next(error);
   }
 });
+
 export default router;

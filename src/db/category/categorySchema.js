@@ -16,6 +16,18 @@ const schema = new mongoose.Schema(
       index: 1,
       required: true,
     },
+    brand: [
+      {
+        type: mongoose.Types.ObjectId,
+        ref: "Brands",
+      },
+    ],
+    material: [
+      {
+        type: mongoose.Types.ObjectId,
+        ref: "Materials",
+      },
+    ],
   },
   {
     timestamps: true,

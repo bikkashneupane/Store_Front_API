@@ -6,19 +6,20 @@ const schema = new mongoose.Schema(
       type: String,
       default: "inactive",
     },
-    title: {
+    name: {
       type: String,
       required: true,
     },
     sku: {
       type: String,
       unique: [true, "Thi SKU has already in use, please enter new SKU."],
+      index: true,
       required: true,
     },
     slug: {
       type: String,
       unique: true,
-      index: 1,
+      index: true,
       required: true,
     },
     price: {
@@ -29,29 +30,6 @@ const schema = new mongoose.Schema(
       type: Number,
       required: true,
     },
-    parentCategoryId: {
-      type: mongoose.Types.ObjectId,
-      required: true,
-    },
-    sales: {
-      isSales: {
-        type: Boolean,
-        default: false,
-      },
-      salesPrice: {
-        type: Number,
-        default: null,
-      },
-      salesStart: {
-        type: Date,
-        default: null,
-      },
-      salesEnd: {
-        type: Date,
-        default: null,
-      },
-    },
-
     description: {
       type: String,
       required: true,
@@ -66,10 +44,37 @@ const schema = new mongoose.Schema(
         required: true,
       },
     ],
+    categoryId: {
+      type: mongoose.Types.ObjectId,
+      required: true,
+      ref: "Category",
+    },
+    brandId: {
+      type: mongoose.Types.ObjectId,
+      required: true,
+      ref: "SubCategory",
+    },
+    materialId: {
+      type: mongoose.Types.ObjectId,
+      required: true,
+      ref: "SubCategory",
+    },
     gender: {
       type: String,
       default: "unisex",
       enum: ["men", "women", "unisex"],
+    },
+    salesPrice: {
+      type: Number,
+      default: null,
+    },
+    salesStart: {
+      type: Date,
+      default: null,
+    },
+    salesEnd: {
+      type: Date,
+      default: null,
     },
   },
   {
