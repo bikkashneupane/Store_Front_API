@@ -6,8 +6,8 @@ export const insertOrder = (obj) => {
 };
 
 // find Order by Id
-export const getOrderById = (_id) => {
-  return orderSchema.findById(_id);
+export const getOrderByFilter = (filter) => {
+  return orderSchema.findOne(filter);
 };
 
 // find all Order

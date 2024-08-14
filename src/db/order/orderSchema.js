@@ -40,6 +40,10 @@ const schema = new mongoose.Schema(
           type: Number,
           required: true,
         },
+        salesPrice: {
+          type: Number,
+          required: false,
+        },
       },
     ],
     totalAmount: {

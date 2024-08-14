@@ -36,9 +36,9 @@ export const auth = async (req, res, next) => {
     }
 
     // if error
-    res.json({
-      status: 401,
-      message: decoded,
+    res.status(401).json({
+      status: "error",
+      message: decoded.message,
     });
   } catch (error) {
     next(error);

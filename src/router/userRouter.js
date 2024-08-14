@@ -185,31 +185,81 @@ router.get("/renew-access", jwtAuth, async (req, res, next) => {
   }
 });
 
-// update-profile
+// update profile detail
 router.patch(
   "/update-profile",
   auth,
   updateUserValidator,
   async (req, res, next) => {
     try {
-      const { email, password, ...rest } = req.body;
+      const email = req.userInfo.email;
+      const currentPassword = req.userInfo.password;
 
-      const updatedPassword = password && hashPassword(password);
+      const { password, ...rest } = req.body;
 
-      const updatedUser = await updateUser(
-        { email },
-        { ...rest, password: updatedPassword }
-      );
+      // compare password first
+      // verify password first
+      const verifyPassword = comparePassword(password, currentPassword);
 
-      updatedUser?._id
-        ? res.json({
+      // if true proceed to update
+      if (verifyPassword) {
+        const updatedUser = await updateUser({ email }, { ...rest });
+        return updatedUser?._id
+          ? res.json({
+              status: "success",
+              message: "User Profile Updated",
+            })
+          : res.json({
+              status: "error",
+              message: "Couldn't update Profile, try again",
+            });
+      }
+
+      res.json({
+        status: "error",
+        message: "Incorrect Passoword",
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
+// update-password
+router.patch(
+  "/update-profile",
+  auth,
+  updateUserValidator,
+  async (req, res, next) => {
+    try {
+      const { currentPassword, newPassword } = req.body;
+
+      // get user password after authenticating
+      const { email, password } = req.userInfo;
+
+      // verify password first
+      const verifyPassword = comparePassword(currentPassword, password);
+
+      // update password
+      if (verifyPassword) {
+        const updatedPassword = password && hashPassword(newPassword);
+        const updatedUser = await updateUser(
+          { email },
+          { password: updatedPassword }
+        );
+
+        if (updatedUser?._id) {
+          return res.json({
             status: "success",
-            message: "User Profile Updated",
-          })
-        : res.json({
-            status: "error",
-            message: "Couldn't update Profile, try again",
+            message: "Password Updated",
           });
+        }
+      }
+
+      res.json({
+        status: "error",
+        message: "Couldn't update Password, try again",
+      });
     } catch (error) {
       next(error);
     }

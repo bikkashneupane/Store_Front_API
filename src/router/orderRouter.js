@@ -1,19 +1,20 @@
 import express from "express";
 import Stripe from "stripe";
-import { v4 as uuidv4 } from "uuid";
-import { insertOrder, updateOrder } from "../db/order/orderModel.js";
+import {
+  getOrderByFilter,
+  insertOrder,
+  updateOrder,
+} from "../db/order/orderModel.js";
+import { auth } from "../middlewares/auth.js";
 
 const router = express.Router();
 const stripe = Stripe(process.env.STRIPE_SK);
 
 // create a payment intent
-// save the order info in mongo db
-router.post("/create-payment-intent", async (req, res, next) => {
+// save the order info in mongo db / update the order
+router.post("/create-payment-intent", auth, async (req, res, next) => {
   try {
-    const { amount, currency, ...rest } = req.body;
-    console.log(rest);
-    const orderId = uuidv4().split("-")[0].toUpperCase();
-
+    const { amount, currency, orderId, ...rest } = req.body;
     const paymentIntent = await stripe.paymentIntents.create({
       amount: amount * 100,
       currency,
@@ -26,15 +27,29 @@ router.post("/create-payment-intent", async (req, res, next) => {
       metadata: { orderId: orderId },
     });
 
-    console.log(paymentIntent);
+    //check if orderId present in db
+    // not present add new
+    // present update
     // save the order info in mongo db
-    const newOrder = await insertOrder({
-      ...rest,
-      orderId,
-      totalAmount: amount,
-      paymentIntentId: paymentIntent?.id,
-    });
-    console.log(newOrder);
+    const order = await getOrderByFilter({ orderId });
+    if (order?._id) {
+      // update the order
+      await updateOrder(
+        { orderId },
+        { ...rest, totalAmount, paymentIntentId: paymentIntent?.id }
+      );
+    }
+    order?._id
+      ? await updateOrder(
+          { orderId },
+          { ...rest, totalAmount, paymentIntentId: paymentIntent?.id }
+        )
+      : await insertOrder({
+          ...rest,
+          orderId,
+          totalAmount: amount,
+          paymentIntentId: paymentIntent?.id,
+        });
 
     res.json({
       status: "success",

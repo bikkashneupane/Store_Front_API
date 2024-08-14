@@ -5,19 +5,19 @@ import orderRouter from "./orderRouter.js";
 
 export const routes = [
   {
-    path: "/users",
+    path: "/v1/users",
     middlewares: [userRouter],
   },
   {
-    path: "/categories",
+    path: "/v1/categories",
     middlewares: [categoryRouter],
   },
   {
-    path: "/products",
+    path: "/v1/products",
     middlewares: [productRouter],
   },
   {
-    path: "/orders",
+    path: "/v1/orders",
     middlewares: [orderRouter],
   },
 ];
