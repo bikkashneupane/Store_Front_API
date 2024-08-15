@@ -121,6 +121,10 @@ router.post(
 
       const signature = req.headers["stripe-signature"];
 
+      console.log("Req.body ", req.body);
+      console.log("Endpoint Secret: ", endpointSecret);
+      console.log("Signature ", signature);
+
       // Construct the event
       const event = stripe.webhooks.constructEvent(
         req.body,
@@ -144,7 +148,7 @@ router.post(
       }
 
       // Respond to Stripe to acknowledge receipt of the event
-      res.json({ received: true });
+      res.json({ received: true, message: "Payment Received" });
     } catch (error) {
       console.error("Webhook Error:", error.message);
       // Respond with an error status code
