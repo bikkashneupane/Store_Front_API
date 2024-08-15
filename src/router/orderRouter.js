@@ -171,7 +171,7 @@ router.post(
   express.raw({ type: "application/json" }),
   async (req, res) => {
     try {
-      const signature = request.headers["stripe-signature"];
+      const signature = req.headers["stripe-signature"];
 
       const endpointSecret = process.env.STRIPE_WEBHOOK_ENDPOINT_SECRET;
 
