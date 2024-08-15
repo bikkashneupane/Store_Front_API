@@ -8,6 +8,7 @@ const schema = new mongoose.Schema(
     },
     orderId: {
       type: String,
+      unique: true,
       required: true,
     },
     paymentIntentId: {

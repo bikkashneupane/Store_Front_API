@@ -27,6 +27,7 @@ router.post("/create-payment-intent", auth, async (req, res, next) => {
 
     // Check if orderId already exists in the database
     const existingOrder = await getOrderByFilter({ orderId });
+    console.log("Exisiting Order: ", existingOrder);
 
     if (existingOrder?._id) {
       try {
@@ -47,6 +48,7 @@ router.post("/create-payment-intent", auth, async (req, res, next) => {
           );
         }
       } catch (err) {
+        console.log("Update failed", err);
         return res.status(500).json({
           status: "error",
           message: "Failed to update payment intent.",
@@ -61,7 +63,7 @@ router.post("/create-payment-intent", auth, async (req, res, next) => {
           payment_method_types: [
             "card",
             "link",
-            "au_becs_debit",
+            // "au_becs_debit",
             // "applepay","googlepay"
           ],
           metadata: { orderId: orderId },
@@ -83,13 +85,16 @@ router.post("/create-payment-intent", auth, async (req, res, next) => {
 
     // Update or create the order in the database
     try {
-      existingOrder?._id
+      console.log("Existing Order Id", existingOrder?.orderId);
+      console.log("Current Order Id", orderId);
+      existingOrder?.orderId
         ? await updateOrder({ orderId }, orderObj)
         : await insertOrder({
             ...orderObj,
             orderId,
           });
     } catch (err) {
+      console.log("error message: ", err);
       return res.status(500).json({
         status: "error",
         message: "Failed to save order information.",

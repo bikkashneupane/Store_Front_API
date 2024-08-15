@@ -16,6 +16,10 @@ export const getOrders = (filter) => {
 };
 
 // update order
+// upsert doesnlt let mongo to create new document if already exist
 export const updateOrder = (filter, obj) => {
-  return orderSchema.findOneAndUpdate(filter, obj, { new: true });
+  return orderSchema.findOneAndUpdate(filter, obj, {
+    new: true,
+    upsert: false,
+  });
 };
