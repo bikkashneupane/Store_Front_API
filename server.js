@@ -12,7 +12,6 @@ mongoConnect();
 //middlewares
 app.use(cors());
 app.use(morgan("dev"));
-app.use(express.raw({ type: "application/json" }));
 app.use(express.json());
 
 // routes
