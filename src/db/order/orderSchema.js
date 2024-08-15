@@ -46,7 +46,7 @@ const schema = new mongoose.Schema(
         },
       },
     ],
-    totalAmount: {
+    amount: {
       type: Number,
       required: true,
     },
