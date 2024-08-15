@@ -8,6 +8,7 @@ import {
 import { auth } from "../middlewares/auth.js";
 
 const router = express.Router();
+
 const stripe = Stripe(process.env.STRIPE_SK);
 
 // create a payment intent
@@ -111,47 +112,98 @@ router.post("/create-payment-intent", auth, async (req, res, next) => {
   }
 });
 
-// Confirm order
+// // Confirm order
+// router.post(
+//   "/webhook",
+//   express.raw({ type: "application/json" }),
+//   async (req, res) => {
+//     try {
+//       const endpointSecret = process.env.STRIPE_WEBHOOK_ENDPOINT_SECRET;
+
+//       const signature = req.headers["stripe-signature"];
+
+//       let event;
+
+//       // Construct the event using raw body
+//       try {
+//         event = stripe.webhooks.constructEvent(
+//           req.body,
+//           signature,
+//           endpointSecret
+//         );
+//         console.log("Event: ", event);
+//       } catch (err) {
+//         res.status(400).send(`Webhook Error: ${err.message}`);
+//         return;
+//       }
+
+//       // Log the event for debugging
+//       console.log("Received event:", event);
+
+//       if (event.type === "payment_intent.succeeded") {
+//         const paymentIntent = event.data.object;
+//         console.log("PaymentIntent succeeded: ", paymentIntent);
+
+//         // Update order status in the database
+//         const order = await updateOrder(
+//           { paymentIntentId: paymentIntent.id },
+//           { status: "Succeeded" }
+//         );
+//         console.log("Order updated:", order);
+//       }
+
+//       // Respond to Stripe to acknowledge receipt of the event
+//       res.send();
+//     } catch (error) {
+//       console.error("Webhook Error:", error);
+//       // Respond with an error status code
+//       res.status(400).send(`Webhook Error: ${error.message}`);
+//     }
+//   }
+// );
+
+// This is your Stripe CLI webhook secret for testing your endpoint locally.
+const endpointSecret =
+  "whsec_7238decf4ef42d1b2fa8b109dd9cc17727e4d6a8e8b7c0efa13fcb60b8bc84a1";
+
 router.post(
   "/webhook",
   express.raw({ type: "application/json" }),
   async (req, res) => {
     try {
-      const endpointSecret = process.env.STRIPE_WEBHOOK_ENDPOINT_SECRET; // Use environment variable for security
+      const signature = request.headers["stripe-signature"];
 
-      const signature = req.headers["stripe-signature"];
+      const endpointSecret = process.env.STRIPE_WEBHOOK_ENDPOINT_SECRET;
 
-      console.log("Req.body ", req.body);
-      console.log("Endpoint Secret: ", endpointSecret);
-      console.log("Signature ", signature);
+      let event;
 
-      // Construct the event
-      const event = stripe.webhooks.constructEvent(
-        req.body,
-        signature,
-        endpointSecret
-      );
-
-      // Log the event for debugging
-      console.log("Received event:", event);
+      try {
+        event = stripe.webhooks.constructEvent(
+          req.body,
+          signature,
+          endpointSecret
+        );
+        console.log("Event: ", event);
+      } catch (err) {
+        res.status(400).send(`Webhook Error: ${err.message}`);
+        return;
+      }
 
       if (event.type === "payment_intent.succeeded") {
         const paymentIntent = event.data.object;
-        console.log("PaymentIntent succeeded:", paymentIntent);
+        console.log("PaymentIntent succeeded: ", paymentIntent);
 
         // Update order status in the database
         const order = await updateOrder(
-          { paymentIntentId: paymentIntent.id }, // Corrected field name
+          { paymentIntentId: paymentIntent.id },
           { status: "Succeeded" }
         );
         console.log("Order updated:", order);
       }
 
-      // Respond to Stripe to acknowledge receipt of the event
-      res.json({ received: true, message: "Payment Received" });
+      // Return a 200 response to acknowledge receipt of the event
+      res.send();
     } catch (error) {
-      console.error("Webhook Error:", error.message);
-      // Respond with an error status code
       res.status(400).send(`Webhook Error: ${error.message}`);
     }
   }
