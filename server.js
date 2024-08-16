@@ -3,7 +3,6 @@ import morgan from "morgan";
 import cors from "cors";
 import { routes } from "./src/router/routers.js";
 import { mongoConnect } from "./src/config/mongoConfig.js";
-import { rawBodyReq } from "./src/middlewares/rawReqBody.js";
 
 const app = express();
 
@@ -13,7 +12,6 @@ mongoConnect();
 //middlewares
 app.use(cors());
 app.use(morgan("dev"));
-app.use(rawBodyReq);
 app.use(express.json());
 
 // routes

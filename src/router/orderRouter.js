@@ -124,9 +124,10 @@ router.post(
 
       let event;
 
+      console.log("rawBody", req.rawBody);
       try {
         event = stripe.webhooks.constructEvent(
-          req.rawBody,
+          req.body,
           signature,
           endpointSecret
         );
