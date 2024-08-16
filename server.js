@@ -3,12 +3,10 @@ import morgan from "morgan";
 import cors from "cors";
 import { routes } from "./src/router/routers.js";
 import { mongoConnect } from "./src/config/mongoConfig.js";
-import Stripe from "stripe";
 import path from "path";
 import { fileURLToPath } from "url";
 
 const app = express();
-const stripe = Stripe(process.env.STRIPE_SK);
 
 // connect to mongoDB
 mongoConnect();
@@ -16,53 +14,6 @@ mongoConnect();
 //middlewares
 app.use(cors());
 app.use(morgan("dev"));
-
-// Confirm Payment Success
-app.post(
-  "/webhook",
-  express.raw({ type: "application/json" }),
-  async (req, res) => {
-    try {
-      const signature = req.headers["stripe-signature"];
-      console.log("SIgnature : ", signature);
-
-      const endpointSecret = process.env.STRIPE_WEBHOOK_ENDPOINT_SECRET;
-
-      let event;
-
-      console.log("rawBody", req.body);
-      try {
-        event = stripe.webhooks.constructEvent(
-          req.body,
-          signature,
-          endpointSecret
-        );
-        console.log("Event: ", event);
-      } catch (err) {
-        res.status(400).send(`Webhook Error: ${err.message}`);
-        return;
-      }
-
-      if (event.type === "payment_intent.succeeded") {
-        const paymentIntent = event.data.object;
-        console.log("PaymentIntent succeeded: ", paymentIntent);
-
-        // Update order status in the database
-        const order = await updateOrder(
-          { paymentIntentId: paymentIntent.id },
-          { status: "Succeeded" }
-        );
-        console.log("Order updated:", order);
-      }
-
-      // Return a 200 response to acknowledge receipt of the event
-      res.send();
-    } catch (error) {
-      res.status(400).send(`Webhook Error: ${error.message}`);
-    }
-  }
-);
-
 app.use(express.json());
 
 // Get the directory name of the current module
