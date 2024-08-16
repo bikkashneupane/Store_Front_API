@@ -5,6 +5,7 @@ import { routes } from "./src/router/routers.js";
 import { mongoConnect } from "./src/config/mongoConfig.js";
 import path from "path";
 import { fileURLToPath } from "url";
+import orderRouter from "./src/router/orderRouter.js";
 
 const app = express();
 
@@ -14,6 +15,9 @@ mongoConnect();
 //middlewares
 app.use(cors());
 app.use(morgan("dev"));
+
+app.use("/v1/orders", orderRouter);
+
 app.use(express.json());
 
 // Get the directory name of the current module

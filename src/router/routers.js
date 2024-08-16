@@ -16,8 +16,4 @@ export const routes = [
     path: "/v1/products",
     middlewares: [productRouter],
   },
-  {
-    path: "/v1/orders",
-    middlewares: [orderRouter],
-  },
 ];
