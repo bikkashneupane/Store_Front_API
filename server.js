@@ -4,6 +4,8 @@ import cors from "cors";
 import { routes } from "./src/router/routers.js";
 import { mongoConnect } from "./src/config/mongoConfig.js";
 import Stripe from "stripe";
+import path from "path";
+import { fileURLToPath } from "url";
 
 const app = express();
 const stripe = Stripe(process.env.STRIPE_SK);
@@ -61,6 +63,13 @@ app.post(
 );
 
 app.use(express.json());
+
+// Get the directory name of the current module
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Serve static files from the .well-known directory
+app.use("/.well-known", express.static(path.join(__dirname, ".well-known")));
 
 // routes
 routes.map(({ path, middlewares }) => {
