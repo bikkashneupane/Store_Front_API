@@ -3,9 +3,10 @@ import morgan from "morgan";
 import cors from "cors";
 import { routes } from "./src/router/routers.js";
 import { mongoConnect } from "./src/config/mongoConfig.js";
-import stripeWebhookRouter from "./src/router/stripeWebhook.js";
+import Stripe from "stripe";
 
 const app = express();
+const stripe = Stripe(process.env.STRIPE_SK);
 
 // connect to mongoDB
 mongoConnect();
