@@ -22,7 +22,7 @@ app.post(
   async (req, res) => {
     try {
       const signature = req.headers["stripe-signature"];
-
+      console.log("SIgnature : ", signature);
       const endpointSecret = process.env.STRIPE_WEBHOOK_ENDPOINT_SECRET;
 
       let event;
