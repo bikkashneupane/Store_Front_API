@@ -91,8 +91,6 @@ router.post(
 
       // Update or create the order in the database
       try {
-        console.log("Existing Order Id", existingOrder?.orderId);
-        console.log("Current Order Id", orderId);
         existingOrder?.orderId
           ? await updateOrder({ orderId }, orderObj)
           : await insertOrder({
