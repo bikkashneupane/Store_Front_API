@@ -1,10 +1,6 @@
 import express from "express";
 import Stripe from "stripe";
-import {
-  getOrderByFilter,
-  insertOrder,
-  updateOrder,
-} from "../db/order/orderModel.js";
+import { getOrders, insertOrder, updateOrder } from "../db/order/orderModel.js";
 import { auth } from "../middlewares/auth.js";
 
 const router = express.Router();
@@ -161,5 +157,19 @@ router.post(
     }
   }
 );
+
+// find all my orders
+router.get("/my-orders", auth, async (req, res, next) => {
+  try {
+    const { _id } = req.userInfo;
+    console.log("userId", _id);
+    const orders = await getOrders({ userId: _id });
+    orders?.length > 0
+      ? res.json({ status: "success", orders })
+      : res.json({ status: "error", message: "No Orders Found" });
+  } catch (error) {
+    next(error);
+  }
+});
 
 export default router;
