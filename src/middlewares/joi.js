@@ -41,14 +41,23 @@ export const loginUserValidator = (req, res, next) => {
   return joiValidator(schema, req, res, next);
 };
 
-// update user validatior
+// update user profile validatior
 export const updateUserValidator = (req, res, next) => {
   const schema = JOI.object({
     firstName: STR_REQ,
     lastName: STR_REQ,
     phone: NUM,
-    email: EMAIL,
     password: STR_REQ,
+  });
+
+  return joiValidator(schema, req, res, next);
+};
+
+// update user validatior
+export const updatePasswordValidator = (req, res, next) => {
+  const schema = JOI.object({
+    currentPassword: STR_REQ,
+    newPassword: STR_REQ,
   });
 
   return joiValidator(schema, req, res, next);

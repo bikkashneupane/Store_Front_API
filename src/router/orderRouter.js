@@ -2,6 +2,7 @@ import express from "express";
 import Stripe from "stripe";
 import {
   getOrderByFilter,
+  getOrders,
   insertOrder,
   updateOrder,
 } from "../db/order/orderModel.js";
@@ -68,11 +69,10 @@ router.post(
             payment_method_types: [
               "card",
               // "link",
-              // "applepay",
-              // "googlepay",
               // "au_becs_debit",
             ],
             metadata: { orderId: orderId },
+            p,
           });
         } catch (err) {
           return res.status(500).json({
@@ -91,8 +91,6 @@ router.post(
 
       // Update or create the order in the database
       try {
-        console.log("Existing Order Id", existingOrder?.orderId);
-        console.log("Current Order Id", orderId);
         existingOrder?.orderId
           ? await updateOrder({ orderId }, orderObj)
           : await insertOrder({
@@ -163,5 +161,19 @@ router.post(
     }
   }
 );
+
+// find all my orders
+router.get("/my-orders", auth, async (req, res, next) => {
+  try {
+    const { _id } = req.userInfo;
+    console.log("userId", _id);
+    const orders = await getOrders({ userId: _id, status: "Succeeded" });
+    orders?.length > 0
+      ? res.json({ status: "success", orders })
+      : res.json({ status: "error", message: "No Orders Found" });
+  } catch (error) {
+    next(error);
+  }
+});
 
 export default router;

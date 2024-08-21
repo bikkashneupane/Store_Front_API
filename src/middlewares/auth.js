@@ -14,10 +14,9 @@ export const auth = async (req, res, next) => {
       // get token
       const tokenObj = await findSession({ token: authorization });
 
-      if (tokenObj._id) {
+      if (tokenObj?._id) {
         // get user
         const user = await getUser({ email: decoded.email });
-
         if (user?._id) {
           if (!user.isEmailVerified) {
             return res.json({

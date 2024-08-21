@@ -9,6 +9,7 @@ import {
 import {
   loginUserValidator,
   newUserValidator,
+  updatePasswordValidator,
   updateUserValidator,
 } from "../middlewares/joi.js";
 import { v4 as uuidv4 } from "uuid";
@@ -186,7 +187,7 @@ router.get("/renew-access", jwtAuth, async (req, res, next) => {
 });
 
 // update profile detail
-router.patch(
+router.put(
   "/update-profile",
   auth,
   updateUserValidator,
@@ -226,10 +227,10 @@ router.patch(
 );
 
 // update-password
-router.patch(
-  "/update-profile",
+router.put(
+  "/update-password",
   auth,
-  updateUserValidator,
+  updatePasswordValidator,
   async (req, res, next) => {
     try {
       const { currentPassword, newPassword } = req.body;
@@ -258,7 +259,7 @@ router.patch(
 
       res.json({
         status: "error",
-        message: "Couldn't update Password, try again",
+        message: "Incorrect Password",
       });
     } catch (error) {
       next(error);
