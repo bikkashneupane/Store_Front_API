@@ -12,6 +12,7 @@ const EMAIL = JOI.string()
 const joiValidator = (schema, req, res, next) => {
   try {
     const { error } = schema.validate(req.body);
+    console.log(error);
     return error ? res.json(error) : next();
   } catch (error) {
     next(error);
@@ -47,7 +48,6 @@ export const updateUserValidator = (req, res, next) => {
     firstName: STR_REQ,
     lastName: STR_REQ,
     phone: NUM,
-    password: STR_REQ,
   });
 
   return joiValidator(schema, req, res, next);
@@ -58,6 +58,19 @@ export const updatePasswordValidator = (req, res, next) => {
   const schema = JOI.object({
     currentPassword: STR_REQ,
     newPassword: STR_REQ,
+  });
+
+  return joiValidator(schema, req, res, next);
+};
+
+// new product validatior
+export const newReviewValidator = (req, res, next) => {
+  const schema = JOI.object({
+    title: STR_REQ,
+    message: STR_REQ,
+    ratings: NUM_REQ,
+    productId: STR_REQ,
+    orderId: STR_REQ,
   });
 
   return joiValidator(schema, req, res, next);

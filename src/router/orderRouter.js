@@ -21,7 +21,6 @@ router.post(
   async (req, res, next) => {
     try {
       const { amount, currency, orderId, ...rest } = req.body;
-
       if (!amount || !currency || !orderId) {
         return res.status(400).json({
           status: "error",
@@ -41,7 +40,7 @@ router.post(
           paymentIntent = await stripe.paymentIntents.retrieve(
             existingOrder?.paymentIntentId
           );
-
+          console.log(paymentIntent);
           // Update the paymentIntent with the new amount if necessary
           if (paymentIntent?.amount !== amount * 100) {
             paymentIntent = await stripe.paymentIntents.update(
@@ -72,7 +71,6 @@ router.post(
               // "au_becs_debit",
             ],
             metadata: { orderId: orderId },
-            p,
           });
         } catch (err) {
           return res.status(500).json({

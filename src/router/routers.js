@@ -1,7 +1,7 @@
 import userRouter from "./userRouter.js";
 import categoryRouter from "./categoryRouter.js";
 import productRouter from "./productRouter.js";
-import orderRouter from "./orderRouter.js";
+import reviewRouter from "./reviewRouter.js";
 
 export const routes = [
   {
@@ -15,5 +15,9 @@ export const routes = [
   {
     path: "/v1/products",
     middlewares: [productRouter],
+  },
+  {
+    path: "/v1/reviews",
+    middlewares: [reviewRouter],
   },
 ];

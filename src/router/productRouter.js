@@ -1,5 +1,5 @@
 import express from "express";
-import { getProductById, getProducts } from "../db/product/productModel.js";
+import { getProductByFilter, getProducts } from "../db/product/productModel.js";
 
 const router = express.Router();
 
@@ -26,7 +26,7 @@ router.get("/", async (req, res, next) => {
 router.get("/:_id", async (req, res, next) => {
   try {
     const { _id } = req.params;
-    const product = await getProductById(_id);
+    const product = await getProductByFilter({ _id });
     product?._id
       ? res.json({
           status: "success",

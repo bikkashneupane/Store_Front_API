@@ -16,7 +16,7 @@ import { v4 as uuidv4 } from "uuid";
 import {
   emailVerificationMail,
   emailVerifiedNotification,
-} from "../services/email/nodeMailer.js";
+} from "../services/nodeMailer.js";
 import {
   deleteSession,
   findSession,
@@ -24,6 +24,7 @@ import {
 } from "../db/session/sessionModel.js";
 import { signAccessJWT, signTokens } from "../util/jwt.js";
 import { auth, jwtAuth } from "../middlewares/auth.js";
+import { upload } from "../services/multer.js";
 
 const router = express.Router();
 
@@ -194,32 +195,17 @@ router.put(
   async (req, res, next) => {
     try {
       const email = req.userInfo.email;
-      const currentPassword = req.userInfo.password;
 
-      const { password, ...rest } = req.body;
-
-      // compare password first
-      // verify password first
-      const verifyPassword = comparePassword(password, currentPassword);
-
-      // if true proceed to update
-      if (verifyPassword) {
-        const updatedUser = await updateUser({ email }, { ...rest });
-        return updatedUser?._id
-          ? res.json({
-              status: "success",
-              message: "User Profile Updated",
-            })
-          : res.json({
-              status: "error",
-              message: "Couldn't update Profile, try again",
-            });
-      }
-
-      res.json({
-        status: "error",
-        message: "Incorrect Passoword",
-      });
+      const updatedUser = await updateUser({ email }, { ...req.body });
+      return updatedUser?._id
+        ? res.json({
+            status: "success",
+            message: "User profile updated",
+          })
+        : res.json({
+            status: "error",
+            message: "Couldn't update profile, try again",
+          });
     } catch (error) {
       next(error);
     }
@@ -261,6 +247,20 @@ router.put(
         status: "error",
         message: "Incorrect Password",
       });
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
+// update-profile image
+router.put(
+  "/update-image",
+  auth,
+  upload.single("profileImage"),
+  async (req, res, next) => {
+    try {
+      console.log(req.file);
     } catch (error) {
       next(error);
     }
