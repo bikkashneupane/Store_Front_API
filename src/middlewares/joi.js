@@ -63,7 +63,7 @@ export const updatePasswordValidator = (req, res, next) => {
   return joiValidator(schema, req, res, next);
 };
 
-// new product validatior
+// new review validatior
 export const newReviewValidator = (req, res, next) => {
   const schema = JOI.object({
     title: STR_REQ,
