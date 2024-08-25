@@ -16,6 +16,7 @@ import { v4 as uuidv4 } from "uuid";
 import {
   emailVerificationMail,
   emailVerifiedNotification,
+  sendOTPMail,
 } from "../services/nodeMailer.js";
 import {
   deleteSession,
@@ -25,6 +26,7 @@ import {
 import { signAccessJWT, signTokens } from "../util/jwt.js";
 import { auth, jwtAuth } from "../middlewares/auth.js";
 import { upload } from "../services/multer.js";
+import { otpGenerator } from "../util/random.js";
 
 const router = express.Router();
 
@@ -211,6 +213,90 @@ router.put(
     }
   }
 );
+
+// request OTP
+router.post("/otp", async (req, res, next) => {
+  try {
+    const { email } = req.body;
+
+    const user = await getUser({ email });
+
+    if (user?._id) {
+      const token = otpGenerator();
+      console.log(token);
+
+      const session = await insertSession({
+        token,
+        associate: email,
+        type: "otp",
+      });
+
+      if (session?._id) {
+        sendOTPMail({ email, token, firstName: user.firstName });
+      }
+    }
+
+    res.json({
+      status: "success",
+      message:
+        "If your email is found in the system, we will send you OTP to reset in your email",
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
+// resetPassword
+router.post("/password/reset", async (req, res, next) => {
+  try {
+    const { otp, email, password } = req.body;
+    console.log(otp, email, password);
+
+    if ((otp, email, password)) {
+      const user = await getUser({ email });
+
+      if (user?._id) {
+        const session = await findSession({
+          token: otp,
+          type: "otp",
+          associate: email,
+        });
+
+        if (session) {
+          const updatedUser = await updateUser(
+            { email },
+            { password: hashPassword(password) }
+          );
+
+          if (updatedUser?._id) {
+            accoundUpdateNotification({
+              email,
+              firstName: updatedUser.firstName,
+            });
+
+            // delete session
+            await deleteSession({
+              token: otp,
+              type: "otp",
+              associate: email,
+            });
+
+            return res.json({
+              status: "success",
+              message: "Password Reset Success",
+            });
+          }
+        }
+      }
+    }
+    res.json({
+      status: "error",
+      message: "Invalid data",
+    });
+  } catch (error) {
+    next(error);
+  }
+});
 
 // update-password
 router.put(
