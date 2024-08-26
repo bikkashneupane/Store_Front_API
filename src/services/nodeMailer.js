@@ -4,9 +4,10 @@ import nodemailer from "nodemailer";
 const emailProcessor = async (mailBody) => {
   //transporter
   const transport = nodemailer.createTransport({
-    host: `${process.env.SMTP_HOST}`,
-    port: 587,
-    secure: false, // Use `true` for port 465, `false` for all other ports
+    // host: `${process.env.SMTP_HOST}`,
+    // port: 587,
+    // secure: false, // Use `true` for port 465, `false` for all other ports
+    service: `${process.env.SMTP_HOST}`,
     auth: {
       user: `${process.env.SMTP_EMAIL}`,
       pass: `${process.env.SMTP_PASSWORD}`,
