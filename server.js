@@ -55,7 +55,7 @@ app.use((error, req, res, next) => {
   });
 });
 
-const PORT = process.env.PORT || 8000;
+const PORT = process.env.PORT || 8010;
 
 //initialize the app
 app.listen(PORT, (error) =>

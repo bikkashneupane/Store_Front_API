@@ -14,6 +14,7 @@ import {
 } from "../middlewares/joi.js";
 import { v4 as uuidv4 } from "uuid";
 import {
+  accountUpdateNotification,
   emailVerificationMail,
   emailVerifiedNotification,
   sendOTPMail,
@@ -122,7 +123,7 @@ router.post("/verify-account", async (req, res, next) => {
 
     res.json({
       status: "error",
-      message: "Could not verify account, try again",
+      message: "Link Expired, Please request new OTP",
     });
   } catch (error) {
     next(error);
@@ -269,7 +270,7 @@ router.post("/password/reset", async (req, res, next) => {
           );
 
           if (updatedUser?._id) {
-            accoundUpdateNotification({
+            accountUpdateNotification({
               email,
               firstName: updatedUser.firstName,
             });
