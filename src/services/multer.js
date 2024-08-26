@@ -4,12 +4,14 @@ import { fileURLToPath } from "url";
 import path, { dirname } from "path";
 
 const __filename = fileURLToPath(import.meta.url);
+console.log(__filename);
 const __dirname = dirname(__filename);
-const destinationFolder = path.join(__dirname, "public/assets/images");
+console.log(__dirname);
+const destinationFolder = path.join(__dirname, "../../public/assets/images");
 
 const isFolderPresent = (dir) => {
   if (!fs.existsSync(dir)) {
-    fs.mkdirSync("dir", { recursive: true });
+    fs.mkdirSync(dir, { recursive: true });
   }
 };
 

@@ -15,17 +15,18 @@ router.post("/", auth, newReviewValidator, async (req, res, next) => {
     const productPurchased = await getOrderByFilter({
       orderId,
       userId: _id,
-      profileImage,
       status: "Succeeded",
     });
-    console.log("Product Purchased", productPurchased);
+
     if (productPurchased?._id) {
       const review = await insertReview({
         ...rest,
         userId: _id,
         userName: `${firstName} ${lastName}`,
+        profileImage,
       });
 
+      console.log(productPurchased);
       return review?._id
         ? res.json({
             status: "success",
