@@ -28,6 +28,7 @@ import { signAccessJWT, signTokens } from "../util/jwt.js";
 import { auth, jwtAuth } from "../middlewares/auth.js";
 import { upload } from "../services/multer.js";
 import { otpGenerator } from "../util/random.js";
+import { cloudinaryUpload } from "../services/cloudinary.js";
 
 const router = express.Router();
 
@@ -347,7 +348,24 @@ router.put(
   upload.single("profileImage"),
   async (req, res, next) => {
     try {
-      console.log(req.file);
+      const { email } = req.userInfo;
+      const filePath = req.file?.path;
+
+      // upload to cloudinary
+      const cloudImageLink = await cloudinaryUpload(filePath);
+      console.log(cloudImageLink);
+
+      // update the profileImage link with cloudinary link
+      const user = await updateUser(
+        { email },
+        { profileImage: cloudImageLink }
+      );
+      user?._id
+        ? res.json({ status: "success", message: "Profile Image Updated" })
+        : res.json({
+            status: "error",
+            message: "Couldn't update profile Image. Try again",
+          });
     } catch (error) {
       next(error);
     }
