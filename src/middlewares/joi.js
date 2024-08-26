@@ -12,7 +12,6 @@ const EMAIL = JOI.string()
 const joiValidator = (schema, req, res, next) => {
   try {
     const { error } = schema.validate(req.body);
-    console.log(error);
     return error ? res.json(error) : next();
   } catch (error) {
     next(error);

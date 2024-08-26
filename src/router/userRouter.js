@@ -225,7 +225,6 @@ router.post("/otp", async (req, res, next) => {
 
     if (user?._id) {
       const token = otpGenerator();
-      console.log(token);
 
       const session = await insertSession({
         token,
@@ -252,7 +251,6 @@ router.post("/otp", async (req, res, next) => {
 router.post("/password/reset", async (req, res, next) => {
   try {
     const { otp, email, password } = req.body;
-    console.log(otp, email, password);
 
     if ((otp, email, password)) {
       const user = await getUser({ email });
@@ -353,7 +351,6 @@ router.put(
 
       // upload to cloudinary
       const cloudImageLink = await cloudinaryUpload(filePath);
-      console.log(cloudImageLink);
 
       // update the profileImage link with cloudinary link
       const user = await updateUser(
@@ -376,7 +373,6 @@ router.put(
 router.delete("/delete-account/:_id?", auth, async (req, res, next) => {
   try {
     const { _id } = req.params;
-    console.log(_id);
 
     const user = await deleteUserById(_id);
 

@@ -17,7 +17,6 @@ export const verifyAccessJWT = (token) => {
   try {
     return JWT.verify(token, process.env.SK_ACCESS);
   } catch (error) {
-    console.log("JWT Sign Access Error: ", error);
     return error;
   }
 };
@@ -38,7 +37,6 @@ export const verifyRefreshJWT = (token) => {
   try {
     return JWT.verify(token, process.env.SK_REFRESH);
   } catch (error) {
-    console.log("JWT Sign Refresh Error: ", error);
     return error;
   }
 };

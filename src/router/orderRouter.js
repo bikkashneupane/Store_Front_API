@@ -32,7 +32,6 @@ router.post(
 
       // Check if orderId already exists in the database
       const existingOrder = await getOrderByFilter({ orderId });
-      console.log("Exisiting Order: ", existingOrder);
 
       if (existingOrder?._id) {
         try {
@@ -40,7 +39,6 @@ router.post(
           paymentIntent = await stripe.paymentIntents.retrieve(
             existingOrder?.paymentIntentId
           );
-          console.log(paymentIntent);
           // Update the paymentIntent with the new amount if necessary
           if (paymentIntent?.amount !== amount * 100) {
             paymentIntent = await stripe.paymentIntents.update(
@@ -53,7 +51,6 @@ router.post(
             );
           }
         } catch (err) {
-          console.log("Update failed", err);
           return res.status(500).json({
             status: "error",
             message: "Failed to update payment intent.",
@@ -96,7 +93,6 @@ router.post(
               orderId,
             });
       } catch (err) {
-        console.log("error message: ", err);
         return res.status(500).json({
           status: "error",
           message: "Failed to save order information.",
@@ -121,20 +117,17 @@ router.post(
   async (req, res) => {
     try {
       const signature = req.headers["stripe-signature"];
-      console.log("SIgnature : ", signature);
 
       const endpointSecret = process.env.STRIPE_WEBHOOK_ENDPOINT_SECRET;
 
       let event;
 
-      console.log("rawBody", req.body);
       try {
         event = stripe.webhooks.constructEvent(
           req.body,
           signature,
           endpointSecret
         );
-        console.log("Event: ", event);
       } catch (err) {
         res.status(400).send(`Webhook Error: ${err.message}`);
         return;
@@ -142,14 +135,12 @@ router.post(
 
       if (event.type === "payment_intent.succeeded") {
         const paymentIntent = event.data.object;
-        console.log("PaymentIntent succeeded: ", paymentIntent);
 
         // Update order status in the database
         const order = await updateOrder(
           { paymentIntentId: paymentIntent.id },
           { status: "Succeeded" }
         );
-        console.log("Order updated:", order);
       }
 
       // Return a 200 response to acknowledge receipt of the event
@@ -164,7 +155,6 @@ router.post(
 router.get("/my-orders", auth, async (req, res, next) => {
   try {
     const { _id } = req.userInfo;
-    console.log("userId", _id);
     const orders = await getOrders({ userId: _id, status: "Succeeded" });
     orders?.length > 0
       ? res.json({ status: "success", orders })

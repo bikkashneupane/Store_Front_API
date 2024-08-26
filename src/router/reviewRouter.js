@@ -26,7 +26,6 @@ router.post("/", auth, newReviewValidator, async (req, res, next) => {
         profileImage,
       });
 
-      console.log(productPurchased);
       return review?._id
         ? res.json({
             status: "success",
