@@ -39,10 +39,6 @@ app.get("/", (req, res, next) => {
   });
 });
 
-app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "build", "index.html"));
-});
-
 // 404 error handler
 app.use((req, res, next) => {
   next({
