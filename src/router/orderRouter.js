@@ -139,7 +139,7 @@ router.post(
         // Update order status in the database
         const order = await updateOrder(
           { paymentIntentId: paymentIntent.id },
-          { status: "Succeeded" }
+          { paymentStatus: "Succeeded", orderStatus: "confirmed" }
         );
       }
 
@@ -155,7 +155,7 @@ router.post(
 router.get("/my-orders", auth, async (req, res, next) => {
   try {
     const { _id } = req.userInfo;
-    const orders = await getOrders({ userId: _id, status: "Succeeded" });
+    const orders = await getOrders({ userId: _id, paymentStatus: "Succeeded" });
     orders?.length > 0
       ? res.json({ status: "success", orders })
       : res.json({ status: "error", message: "No Orders Found" });

@@ -2,9 +2,14 @@ import { mongoose } from "mongoose";
 
 const schema = new mongoose.Schema(
   {
-    status: {
+    paymentStatus: {
       type: String,
-      default: "processing",
+      default: "pending",
+    },
+    orderStatus: {
+      type: String,
+      default: "pending",
+      enum: ["pending", "confirmed", "processing", "shipped", "delivered"],
     },
     orderId: {
       type: String,
@@ -17,10 +22,6 @@ const schema = new mongoose.Schema(
     },
     userId: {
       type: mongoose.Types.ObjectId,
-      required: true,
-    },
-    userName: {
-      type: String,
       required: true,
     },
     items: [

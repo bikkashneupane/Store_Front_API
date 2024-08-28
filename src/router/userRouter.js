@@ -225,6 +225,7 @@ router.post("/otp", async (req, res, next) => {
 
     if (user?._id) {
       const token = otpGenerator();
+      console.log(token);
 
       const session = await insertSession({
         token,
@@ -389,9 +390,5 @@ router.delete("/delete-account/:_id?", auth, async (req, res, next) => {
     next(error);
   }
 });
-
-// otp request
-
-// reset-password
 
 export default router;
