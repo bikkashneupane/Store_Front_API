@@ -6,9 +6,22 @@ import { verifyAccessJWT, verifyRefreshJWT } from "../util/jwt.js";
 export const auth = async (req, res, next) => {
   try {
     const { authorization } = req.headers;
-
+    if (!authorization) {
+      return next({
+        status: 401,
+        message: "Authorization header is missing",
+      });
+    }
     // verfy access jwt
     const decoded = verifyAccessJWT(authorization);
+
+    // Check if the token verification failed and returned an error message
+    if (typeof decoded === "string" || !decoded?.email) {
+      return next({
+        status: 401,
+        message: decoded, // "jwt expired" or "Invalid Token"
+      });
+    }
 
     if (decoded?.email) {
       // get token
@@ -37,7 +50,7 @@ export const auth = async (req, res, next) => {
     // if error
     res.status(401).json({
       status: "error",
-      message: decoded.message,
+      message: "Unauthorized access.",
     });
   } catch (error) {
     next(error);
@@ -52,6 +65,13 @@ export const jwtAuth = async (req, res, next) => {
 
     // verfy access jwt
     const decoded = verifyRefreshJWT(authorization);
+
+    if (typeof decoded === "string") {
+      return next({
+        status: 401,
+        message: decoded, // "jwt expired" or "Invalid Token"
+      });
+    }
 
     if (decoded?.email) {
       // get user
@@ -73,7 +93,9 @@ export const jwtAuth = async (req, res, next) => {
     // if error
     res.json({
       status: 401,
-      message: errorMessage ? errorMessage : decoded,
+      message: errorMessage
+        ? errorMessage
+        : "Invalid Token or unauthorized access.",
     });
   } catch (error) {
     next(error);

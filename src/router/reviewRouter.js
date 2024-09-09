@@ -15,7 +15,7 @@ router.post("/", auth, newReviewValidator, async (req, res, next) => {
     const productPurchased = await getOrderByFilter({
       orderId,
       userId: _id,
-      status: "Succeeded",
+      paymentStatus: "Succeeded",
     });
 
     if (productPurchased?._id) {

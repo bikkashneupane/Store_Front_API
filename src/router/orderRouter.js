@@ -137,10 +137,12 @@ router.post(
         const paymentIntent = event.data.object;
 
         // Update order status in the database
-        const order = await updateOrder(
+        await updateOrder(
           { paymentIntentId: paymentIntent.id },
           { paymentStatus: "Succeeded", orderStatus: "confirmed" }
         );
+
+        // send email to user with order receipt
       }
 
       // Return a 200 response to acknowledge receipt of the event

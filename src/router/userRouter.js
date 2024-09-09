@@ -141,15 +141,18 @@ router.post("/login", loginUserValidator, async (req, res, next) => {
     if (user?._id) {
       const isPassword = comparePassword(password, user.password);
 
-      return isPassword
-        ? res.json({
-            status: "success",
-            tokens: signTokens(email),
-          })
-        : res.json({
-            status: "error",
-            message: "Incorrect Password",
-          });
+      if (isPassword) {
+        const tokens = await signTokens(email);
+        return res.json({
+          status: "success",
+          tokens,
+        });
+      } else {
+        res.json({
+          status: "error",
+          message: "Incorrect Password",
+        });
+      }
     }
 
     res.json({
@@ -180,11 +183,12 @@ router.get("/profile", auth, async (req, res, next) => {
 router.get("/renew-access", jwtAuth, async (req, res, next) => {
   try {
     const { email } = req.userInfo;
+    const accessJWT = await signAccessJWT(email);
 
     res.json({
       status: "success",
-      message: "",
-      accessJWT: signAccessJWT(email),
+      message: "Access Renewed",
+      accessJWT,
     });
   } catch (error) {
     next(error);
@@ -225,7 +229,6 @@ router.post("/otp", async (req, res, next) => {
 
     if (user?._id) {
       const token = otpGenerator();
-      console.log(token);
 
       const session = await insertSession({
         token,

@@ -122,3 +122,44 @@ export const accountUpdateNotification = ({ email, firstName }) => {
 
   emailProcessor(obj);
 };
+
+// send email receipt
+export const sendEmailReceipt = ({ email, firstName, orderDetails }) => {
+  const {
+    total,
+    itemName,
+    quantity,
+    amount,
+    estimatedArrival,
+    shippingAddress,
+  } = orderDetails;
+  const obj = {
+    from: `"${process.env.SMTP_SENDER}" <${process.env.SMTP_EMAIL}>`,
+    to: email,
+    subject: "Your Order Receipt from Vikiamy's",
+    html: `
+      <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; background-color: #f4f4f4; padding: 20px;">
+        <div style="max-width: 600px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px;">
+          <h2 style="text-align: center; color: #4CAF50;">Thank you for your purchase, ${firstName}!</h2>
+          <p>Your order is in the works. We sent you an email to ${email} with your order receipt.</p>
+          <h3>Order Summary</h3>
+          <p><strong>Total:</strong> ${total}</p>
+          <p><strong>Item:</strong> ${itemName}</p>
+          <p><strong>Quantity:</strong> ${quantity}</p>
+          <p><strong>Amount:</strong> ${amount}</p>
+          <h3>Estimated Arrival</h3>
+          <p>${estimatedArrival}</p>
+          <p>To ensure prompt delivery, some items may be shipped separately.</p>
+          <h3>Shipping To</h3>
+          <p>${shippingAddress}</p>
+          <h3>Need Help?</h3>
+          <p>If you have any questions, contact us at <a href="mailto:support@vikiamy.com">support@vikiamy.com</a> or call (02) 9876 5432.</p>
+          <p>Need to return something? Print or show this email in-store to use as a receipt.</p>
+          <p>Thank you for shopping with us!<br>Vikiamy's</p>
+        </div>
+      </div>
+    `,
+  };
+
+  emailProcessor(obj);
+};
