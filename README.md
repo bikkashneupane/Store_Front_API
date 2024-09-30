@@ -25,13 +25,13 @@ The backend API for [Vikiasmy's Watch Haven](https://vikiasmy.bikashneupane.com)
 1. Clone the repository:
 
    ```bash
-      git clone https://github.com/bikkashneupane/Store_Backend
+      git clone https://github.com/bikkashneupane/Store_Front_API
    ```
 
 2. Navigate to the project directory:
 
    ```bash
-      cd Store_Backend
+      cd Store_Front_API
    ```
 
 3. Install dependencies:
