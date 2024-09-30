@@ -1,4 +1,3 @@
-````markdown
 # Vikiasmy's Watch Haven - Backend
 
 The backend API for [Vikiasmy's Watch Haven](https://vikiasmy.bikashneupane.com), a full-stack e-commerce platform for luxury watches. The backend handles user authentication, order management, and secure payment processing through Stripe.
@@ -24,10 +23,10 @@ The backend API for [Vikiasmy's Watch Haven](https://vikiasmy.bikashneupane.com)
 ## Installation:
 
 1. Clone the repository:
+
    ```bash
       git clone https://github.com/bikkashneupane/Store_Backend
    ```
-````
 
 2. Navigate to the project directory:
 
@@ -74,3 +73,7 @@ The backend API for [Vikiasmy's Watch Haven](https://vikiasmy.bikashneupane.com)
    ```bash
    npm start
    ```
+
+```
+
+```
