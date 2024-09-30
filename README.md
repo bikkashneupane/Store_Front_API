@@ -73,7 +73,3 @@ The backend API for [Vikiasmy's Watch Haven](https://vikiasmy.bikashneupane.com)
    ```bash
    npm start
    ```
-
-```
-
-```
