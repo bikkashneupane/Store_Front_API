@@ -1,6 +1,6 @@
 # Vikiasmy's Watch Haven - Backend
 
-The backend API for [Vikiasmy's Watch Haven](https://vikiasmy.bikashneupane.com), a full-stack e-commerce platform for luxury watches. The backend handles user authentication, order management, and secure payment processing through Stripe.
+The backend API for [Vikiasmy's Watch Haven](https://vikiasmy-watches.vercel.app/), a full-stack e-commerce platform for luxury watches. The backend handles user authentication, order management, and secure payment processing through Stripe.
 
 ## Features:
 
