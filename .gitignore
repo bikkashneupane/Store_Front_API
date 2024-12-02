@@ -1,3 +1,4 @@
 node_modules
 .env
 .http
+AWS_EC2_GUIDE.md
