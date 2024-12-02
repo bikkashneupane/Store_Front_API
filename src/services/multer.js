@@ -5,7 +5,11 @@ import path, { dirname } from "path";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
-const destinationFolder = path.join(__dirname, "../../public/assets/images");
+
+// const destinationFolder = path.join(__dirname, "../../public/assets/images");
+
+// Use the /tmp directory for file uploads on Vercel
+const destinationFolder = path.join("/tmp", "assets/images");
 
 const isFolderPresent = (dir) => {
   if (!fs.existsSync(dir)) {
